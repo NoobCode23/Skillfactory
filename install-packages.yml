@@ -1,0 +1,18 @@
+- name: Install cmatrix, cowsay, sl
+  hosts: utkin
+  become: true
+  tasks:
+    - name: Install cmatrix
+      apt:
+        name: cmatrix
+        state: present
+
+    - name: Install cowsay
+      apt:
+        name: cowsay
+        state: present
+
+    - name: Install sl
+      apt:
+        name: sl
+        state: present
