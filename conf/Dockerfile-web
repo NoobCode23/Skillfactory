@@ -1,0 +1,18 @@
+FROM php:7.4-apache
+
+LABEL Slava Utkin
+
+RUN 	apt-get update && \
+	apt-get install -y libyaml-dev && \
+	rm -rf /var/lib/apt/lists/*
+
+RUN	pecl install yaml && \
+	docker-php-ext-enable yaml
+
+RUN	docker-php-ext-install mysqli pdo pdo_sql
+
+COPY	index.php /var/www/html/index.php
+COPY	lab-sec.yaml /var/www/html/lab-sec.yaml
+COPY	lab-conf.yaml /var/www/html/lab-conf.yaml
+
+RUN chown -R www-data:www-data /var/www/html	

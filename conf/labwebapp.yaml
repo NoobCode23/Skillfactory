@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+
+kind: Deployment
+metadata:
+  name: labwebapp-deployment
+  labels:
+    app: labwebapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: labwebapp
+  template:
+    metadata:
+      labels:
+        app: labwebapp
+    spec:
+      containers:
+      - name: labwebapp
+        image: slavautkin/php:7.4-apache
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: "512Mi"
+        env:
+        - name: USER_NAME
+          valueFrom:
+            secretKeyRef:
+              name: lab-sec
+              key: username
+        - name: USER_PWD
+          valueFrom:
+            secretKeyRef:
+              name: lab-sec
+              key: password
+        - name: DB_URL
+          valueFrom:
+            configMapKeyRef:
+              name: lab-conf
+              key: lab-url
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  # Имя сервиса
+  name: labwebapp-service
+spec:
+  # Тип сервиса
+  type: NodePort
+  selector:
+    app: labwebapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080
